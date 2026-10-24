@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVEX Admin Panel</title>
+  <style>
+    :root { --bg: #05040a; --bg-glass: rgba(20, 16, 34, 0.85); --purple: #b26bff; --blue: #4ec5ff; --ink: #f4f1ff; --line: rgba(180, 160, 255, 0.2); --red: #ff4e6b; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--ink); padding: 2rem 1rem; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+    .container { width: 100%; max-width: 600px; }
+    .card { background: var(--bg-glass); border: 1px solid var(--line); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); }
+    h1, h2 { text-align: center; margin-bottom: 1.5rem; }
+    input, textarea, button { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,0.5); color: white; font-family: inherit; box-sizing: border-box; }
+    button { background: linear-gradient(135deg, var(--purple), var(--blue)); border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+    button:hover { opacity: 0.8; }
+    .error { color: var(--red); text-align: center; margin-bottom: 1rem; display: none; font-size: 0.9rem; }
+    .hidden { display: none !important; }
+    .product-item { background: rgba(0,0,0,0.3); padding: 12px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); }
+    .delete-btn { width: auto; padding: 6px 12px; background: var(--red); margin: 0; font-size: 0.8rem; color: white; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="card">
+    <h1>AVEX Admin</h1>
+    <div id="login-error" class="error"></div>
+    <input type="email" id="email" placeholder="Admin Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div id="admin-screen" class="hidden">
+    <div class="card">
+      <h2>Add New Product</h2>
+      <div id="add-error" class="error"></div>
+      <input type="text" id="title" placeholder="Product Title (e.g., Cyberpunk Edit)">
+      <input type="number" id="price" placeholder="Price in USD (e.g., 15)">
+      <input type="text" id="category" placeholder="Category (PFP, CC, EDITS, SOUNDS)">
+      <input type="text" id="imageUrl" placeholder="Image URL (Optional)">
+      <textarea id="desc" rows="3" placeholder="Description"></textarea>
+      <button onclick="addProduct()">Publish Product</button>
+      <button onclick="logout()" style="background: transparent; border: 1px solid var(--line); margin-top: 10px;">Logout</button>
+    </div>
+
+    <div class="card" id="product-list">
+      <h2>Your Products</h2>
+      <div id="products-container">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBaDJZW6effRPoivwxWab34mAh0aE7kJH4",
+    authDomain: "avex-store.firebaseapp.com",
+    projectId: "avex-store",
+    storageBucket: "avex-store.firebasestorage.app",
+    messagingSenderId: "478620501798",
+    appId: "1:478620501798:web:5d1fd2b6fc572b82d7a3e7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.login = async function() {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    const err = document.getElementById('login-error');
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (error) {
+      err.textContent = "Login failed. Check email/password.";
+      err.style.display = "block";
+    }
+  }
+
+  window.logout = function() { signOut(auth); }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('admin-screen').classList.remove('hidden');
+      loadProducts();
+    } else {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('admin-screen').classList.add('hidden');
+    }
+  });
+
+  window.addProduct = async function() {
+    const title = document.getElementById('title').value;
+    const price = parseFloat(document.getElementById('price').value);
+    const cat = document.getElementById('category').value.toUpperCase();
+    const img = document.getElementById('imageUrl').value;
+    const desc = document.getElementById('desc').value;
+    const err = document.getElementById('add-error');
+
+    if(!title || !price || !cat) {
+      err.textContent = "Please fill out Title, Price, and Category.";
+      err.style.display = "block";
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "products"), {
+        title, price, cat, img, desc, createdAt: new Date()
+      });
+      document.getElementById('title').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('category').value = '';
+      document.getElementById('imageUrl').value = '';
+      document.getElementById('desc').value = '';
+      err.style.display = "none";
+      loadProducts();
+    } catch(e) {
+      err.textContent = "Error: " + e.message;
+      err.style.display = "block";
+    }
+  }
+
+  async function loadProducts() {
+    const container = document.getElementById('products-container');
+    container.innerHTML = "Loading...";
+    const querySnapshot = await getDocs(collection(db, "products"));
+    container.innerHTML = "";
+    
+    if(querySnapshot.empty) {
+      container.innerHTML = "<p>No products found. Add one above!</p>";
+      return;
+    }
+
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const div = document.createElement('div');
+      div.className = 'product-item';
+      div.innerHTML = `
+        <div>
+          <strong>${data.title}</strong> - $${data.price} (${data.cat})
+        </div>
+        <button class="delete-btn" onclick="deleteProduct('${docSnap.id}')">Delete</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  window.deleteProduct = async function(id) {
+    if(confirm("Are you sure you want to delete this?")) {
+      await deleteDoc(doc(db, "products", id));
+      loadProducts();
+    }
+  }
+</script>
+
+</body>
+</html>
