@@ -402,7 +402,9 @@
       <input type="text" class="search-bar" id="searchInput" placeholder="Search assets...">
     </div>
 
-    <div class="product-grid" id="productGrid"></div>
+    <div class="product-grid" id="productGrid">
+      <p style="color:var(--ink-muted); text-align:center; grid-column:1/-1;">Loading products from database...</p>
+    </div>
   </section>
 
   <footer class="footer" id="about">
@@ -533,7 +535,22 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaDJZW6effRPoivwxWab34mAh0aE7kJH4",
+      authDomain: "avex-store.firebaseapp.com",
+      projectId: "avex-store",
+      storageBucket: "avex-store.firebasestorage.app",
+      messagingSenderId: "478620501798",
+      appId: "1:478620501798:web:5d1fd2b6fc572b82d7a3e7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.body.classList.add('is-loaded');
@@ -541,34 +558,30 @@
       }, 100);
     });
 
-    // ============================================================
-    // SECRET REDEEM CODES (EDIT THIS!)
-    // ============================================================
-    // Add your codes here. The bot will send these to the user.
-    // Format: "CODE": "GOOGLE DRIVE LINK"
-    const validCodes = {
-      "AVEX-PFP-001": "https://drive.google.com/drive/folders/your-pfp-link",
-      "AVEX-EDIT-002": "https://drive.google.com/file/d/your-edit-link",
-      "AVEX-CC-003": "https://drive.google.com/file/d/your-cc-link"
-    };
-
-    const products = [
-      { id: 1, cat: "PFP", title: "Neon Cyber PFP Pack", price: 12.00, desc: "10 high-resolution futuristic avatars with holographic neon lighting.", color: "#b26bff", contents: ["Avatar 01: Cyber Ninja", "Avatar 02: Neon Hacker", "Avatar 03: Glitch Ghost"], compat: "Discord, Twitter (PNG)" },
-      { id: 2, cat: "PFP", title: "Anime Glitch Avatars", price: 15.00, desc: "8 stylized anime avatar assets featuring digital glitch aesthetics.", color: "#b26bff", contents: ["Avatar 01: Glitch Eyes", "Avatar 02: VHS Anime", "Avatar 03: Distorted Manga"], compat: "All social platforms (PNG)" },
-      { id: 3, cat: "CC", title: "Cinematic Teal & Orange", price: 8.00, desc: "Hollywood-grade color grading LUT designed for Premiere Pro and Resolve.", color: "#4ec5ff", contents: ["LUT 01: Blockbuster Teal", "LUT 02: Warm Sunset", "LUT 03: Moody Night"], compat: "Premiere Pro, Resolve (.CUBE)" },
-      { id: 4, cat: "EDITS", title: "Cyberpunk Anime Edit", price: 25.00, desc: "A fully finished 15-second anime edit featuring high-energy transitions.", color: "#ff6bd6", contents: ["Final Edit: 15s MP4 (4K)", "Project File: After Effects", "Sound Design: WAV pack"], compat: "Any video player / After Effects" },
-      { id: 5, cat: "TWIXTORS", title: "Velocity Slow-Mo Pack", price: 10.00, desc: "5 smooth slow-motion clips optimized for twixtor workflows.", color: "#6bffb2", contents: ["Clip 01: Smoke Flow", "Clip 02: Particle Blast", "Clip 03: Water Splash"], compat: "After Effects, Premiere Pro" },
-      { id: 6, cat: "INTROS", title: "Glitch Core Intro", price: 18.00, desc: "A high-impact 10-second intro template. Fully customizable.", color: "#ffd66b", contents: ["Intro Template (10s)", "Custom Font Pack", "Audio Track (WAV)"], compat: "After Effects (AEP)" },
-      { id: 7, cat: "WATERMARKS", title: "Holographic Brand Mark", price: 5.00, desc: "A sleek, animated watermark for your video edits.", color: "#ff8f6b", contents: ["Animated Watermark (GIF)", "Static Watermark (PNG)", "Alpha Channel Overlay (MOV)"], compat: "Premiere Pro, OBS" },
-      { id: 8, cat: "SOUNDS", title: "Sci-Fi Impact SFX", price: 6.00, desc: "20 deep cinematic bass impacts and transition risers.", color: "#9d6bff", contents: ["Impact 01-05: Heavy Bass", "Riser 01-05: Cinematic Build", "Glitch 01-05: Digital FX"], compat: "Any video/audio editor (WAV)" }
-    ];
-
-    const grid = document.getElementById('productGrid');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const catBtns = document.querySelectorAll('.cat-btn');
-    const searchInput = document.getElementById('searchInput');
+    let products = [];
     let currentFilter = 'ALL';
     let currentSearch = '';
+    const grid = document.getElementById('productGrid');
+
+    async function fetchProducts() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        products = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          products.push({
+            id: doc.id,
+            ...data,
+            color: data.color || "#b26bff",
+            contents: data.desc.split(',').map(s => s.trim()) 
+          });
+        });
+        renderProducts();
+      } catch (error) {
+        console.error("Error fetching products: ", error);
+        grid.innerHTML = `<p style="color:var(--red); text-align:center; grid-column:1/-1;">Failed to load products. Check database permissions.</p>`;
+      }
+    }
 
     function renderProducts() {
       grid.innerHTML = '';
@@ -579,7 +592,7 @@
       });
 
       if (filtered.length === 0) {
-        grid.innerHTML = `<p style="color:var(--ink-muted); grid-column:1/-1; text-align:center; padding:3rem 0;">No assets found.</p>`;
+        grid.innerHTML = `<p style="color:var(--ink-muted); grid-column:1/-1; text-align:center; padding:3rem 0;">No assets found in this category.</p>`;
         return;
       }
 
@@ -588,8 +601,13 @@
         el.className = 'product-card reveal is-visible';
         el.style.transitionDelay = `${index * 0.05}s`;
         el.setAttribute('data-cursor', 'VIEW');
+        
+        const imgHtml = p.img 
+          ? `<img src="${p.img}" alt="${p.title}" style="width:100%; height:100%; object-fit:cover;">` 
+          : `${p.cat} PREVIEW`;
+
         el.innerHTML = `
-          <div class="product-card__img" style="--cat-color: ${p.color}">${p.cat} PREVIEW</div>
+          <div class="product-card__img" style="--cat-color: ${p.color}">${imgHtml}</div>
           <div class="product-card__content">
             <span class="product-card__cat">${p.cat}</span>
             <h3 class="product-card__title">${p.title}</h3>
@@ -606,19 +624,33 @@
       bindCursorHover();
     }
 
-    function setFilter(filter) {
-      currentFilter = filter;
-      filterBtns.forEach(b => {
-        if(b.dataset.filter === filter) b.classList.add('is-active');
-        else b.classList.remove('is-active');
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        currentFilter = btn.dataset.filter;
+        renderProducts();
       });
-      renderProducts();
-    }
+    });
 
-    filterBtns.forEach(btn => btn.addEventListener('click', () => setFilter(btn.dataset.filter)));
-    catBtns.forEach(btn => btn.addEventListener('click', () => { setFilter(btn.dataset.category); document.getElementById('store').scrollIntoView({ behavior: 'smooth' }); }));
-    searchInput.addEventListener('input', (e) => { currentSearch = e.target.value; renderProducts(); });
-    renderProducts();
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.dataset.category;
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          if(b.dataset.filter === currentFilter) b.classList.add('is-active');
+          else b.classList.remove('is-active');
+        });
+        renderProducts();
+        document.getElementById('store').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => { 
+      currentSearch = e.target.value; 
+      renderProducts(); 
+    });
+
+    fetchProducts();
 
     const modal = document.getElementById('productModal');
     let activeProduct = null;
@@ -629,14 +661,23 @@
       document.getElementById('modalTitle').textContent = p.title;
       document.getElementById('modalPrice').textContent = `$${p.price.toFixed(2)}`;
       document.getElementById('modalDesc').textContent = p.desc;
-      document.getElementById('modalCompat').textContent = p.compat;
+      document.getElementById('modalCompat').textContent = "Check description";
+      
       const list = document.getElementById('modalContentsList');
       list.innerHTML = '';
       p.contents.forEach(item => {
         const li = document.createElement('li'); li.textContent = item; list.appendChild(li);
       });
+      
       document.getElementById('modalImgWrap').style.setProperty('--cat-color', p.color);
-      document.getElementById('modalImgText').textContent = `${p.cat} PREVIEW`;
+      
+      const imgWrap = document.getElementById('modalImgWrap');
+      if(p.img) {
+        imgWrap.innerHTML = `<img src="${p.img}" style="width:100%; height:100%; object-fit:cover; z-index:1;">`;
+      } else {
+        imgWrap.innerHTML = `<span id="modalImgText">${p.cat} PREVIEW</span>`;
+      }
+
       modal.classList.add('is-open');
     }
 
@@ -696,10 +737,8 @@
 
     document.getElementById('checkoutBtn').addEventListener('click', () => {
       if (cart.length === 0) return alert("Your cart is empty!");
-      
       const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       document.getElementById('checkoutTotalDisplay').textContent = `$${totalUSD.toFixed(2)} USD`;
-      
       cartDrawer.classList.remove('is-open');
       checkoutModal.classList.add('is-open');
     });
@@ -708,20 +747,16 @@
     document.getElementById('checkoutBg').addEventListener('click', () => checkoutModal.classList.remove('is-open'));
 
     document.getElementById('goToBotBtn').addEventListener('click', () => {
-      // ============================================================
-      // CHANGE THIS TO YOUR BOT LINK
-      // ============================================================
-      window.open('https://t.me/Avex_Edit_bot', '_blank');
-      
+      window.open('https://t.me/YOUR_TELEGRAM_BOT_LINK', '_blank');
       cart = [];
       localStorage.removeItem('avex:cart');
       updateCartUI();
       checkoutModal.classList.remove('is-open');
     });
 
-    // ============================================================
-    // REDEEM SYSTEM LOGIC
-    // ============================================================
+    // ==========================================
+    // AUTOMATED REDEEM SYSTEM
+    // ==========================================
     const redeemModal = document.getElementById('redeemModal');
     document.getElementById('redeemBtn').addEventListener('click', () => {
       redeemModal.classList.add('is-open');
@@ -735,19 +770,28 @@
       const code = document.getElementById('redeemInput').value.trim().toUpperCase();
       const msg = document.getElementById('redeemMsg');
       
-      if (validCodes[code]) {
-        msg.innerHTML = `✅ Verified! <a href="${validCodes[code]}" target="_blank" style="color:var(--blue); text-decoration:underline;">Click to Download</a>`;
+      const foundProduct = products.find(p => p.title.toUpperCase().includes(code) || p.id === code);
+      
+      if (foundProduct) {
+        msg.innerHTML = `✅ Verified! <a href="${foundProduct.downloadUrl}" target="_blank" style="color:var(--blue); text-decoration:underline;">Click to Download</a>`;
         msg.style.color = "var(--green)";
       } else {
-        msg.textContent = "❌ Invalid code. Please check and try again.";
-        msg.style.color = "var(--red)";
+        const demoCodes = {
+            "AVEX-PFP-001": "https://drive.google.com/your-pfp-link",
+            "AVEX-EDIT-002": "https://drive.google.com/your-edit-link"
+        };
+        if(demoCodes[code]){
+            msg.innerHTML = `✅ Verified! <a href="${demoCodes[code]}" target="_blank" style="color:var(--blue); text-decoration:underline;">Click to Download</a>`;
+            msg.style.color = "var(--green)";
+        } else {
+            msg.textContent = "❌ Invalid code. Please check and try again.";
+            msg.style.color = "var(--red)";
+        }
       }
       msg.style.display = "block";
     });
 
-    // ============================================================
-    // UI ANIMATIONS
-    // ============================================================
+    // CURSOR & ANIMATIONS
     const cursor = document.getElementById('cursor');
     const cursorLabel = document.getElementById('cursorLabel');
     const dot = document.getElementById('cursorDot');
@@ -868,6 +912,8 @@
       msg.style.display = 'block';
       e.target.reset();
     });
+
+    updateCartUI();
   </script>
 </body>
 </html>
