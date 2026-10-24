@@ -11,7 +11,7 @@ BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
 # 2. YOUR DETAILS
 TELEBIRR_NUMBER = "0935630202"
 TELEBIRR_NAME = "Mekasha"
-YOUR_TELEGRAM_USERNAME = "@t.me/Madara_912" 
+YOUR_TELEGRAM_USERNAME = "@Madara_912" 
 
 # 3. YOUR ADMIN ID (So the bot forwards screenshots to YOU)
 # Message @userinfobot on Telegram to get your ID (e.g., 123456789)
