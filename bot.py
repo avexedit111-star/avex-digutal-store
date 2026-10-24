@@ -1,18 +1,40 @@
 import logging
+import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from telegram import Update, LabeledPrice, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, PreCheckoutQueryHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, PreCheckoutQueryHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
-# 1. PUT YOUR BOT TOKEN HERE (From BotFather)
+# ==========================================
+# 1. PUT YOUR BOT TOKEN HERE
+# ==========================================
 BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
 
-# 2. PUT YOUR SECRET REDEEM CODES HERE
-# These MUST match the codes in your index.html file!
+# 2. YOUR SECRET REDEEM CODES (Must match website)
 REDEEM_CODES = {
     "PFP": "AVEX-PFP-001",
     "EDIT": "AVEX-EDIT-002",
     "CC": "AVEX-CC-003"
 }
 
+# ==========================================
+# 3. DUMMY WEB SERVER (Fixes Render Timeout)
+# ==========================================
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b"AVEX Bot is running perfectly!")
+
+def run_health_server():
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(('0.0.0.0', port), HealthCheckHandler)
+    server.serve_forever()
+
+# ==========================================
+# 4. BOT LOGIC
+# ==========================================
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -52,7 +74,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def precheckout_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.pre_checkout_query
-    await query.answer(ok=True) # Automatically approve
+    await query.answer(ok=True)
 
 async def successful_payment_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     payment = update.message.successful_payment
@@ -60,25 +82,32 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
     
     if payload == "pfp_payload":
         code = REDEEM_CODES["PFP"]
-        await update.message.reply_text(f"✅ Payment Received!\n\nYour Redeem Code is: `{code}`\n\nGo to https://avexedit111-star.github.io/avex-digital-store/ and click 'Redeem' in the top menu.", parse_mode='Markdown')
     elif payload == "edit_payload":
         code = REDEEM_CODES["EDIT"]
-        await update.message.reply_text(f"✅ Payment Received!\n\nYour Redeem Code is: `{code}`\n\nGo to https://avexedit111-star.github.io/avex-digital-store/ and click 'Redeem' in the top menu.", parse_mode='Markdown')
     elif payload == "cc_payload":
         code = REDEEM_CODES["CC"]
-        await update.message.reply_text(f"✅ Payment Received!\n\nYour Redeem Code is: `{code}`\n\nGo to https://avexedit111-star.github.io/avex-digital-store/ and click 'Redeem' in the top menu.", parse_mode='Markdown')
+    else:
+        return
+
+    await update.message.reply_text(
+        f"✅ Payment Received!\n\nYour Redeem Code is: `{code}`\n\nGo to https://avexedit111-star.github.io/avex-digital-store/ and click 'Redeem' in the top menu.", 
+        parse_mode='Markdown'
+    )
 
 def main():
+    # Start the dummy web server in the background so Render doesn't crash us
+    threading.Thread(target=run_health_server, daemon=True).start()
+
+    # drop_pending_updates=True prevents the 409 Conflict error
     application = Application.builder().token(BOT_TOKEN).build()
     
     application.add_handler(CommandHandler("start", start))
-    from telegram.ext import CallbackQueryHandler
     application.add_handler(CallbackQueryHandler(button_handler))
     application.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
 
     print("Bot is running...")
-    application.run_polling()
+    application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
