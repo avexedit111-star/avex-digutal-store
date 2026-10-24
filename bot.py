@@ -98,7 +98,6 @@ def main():
     # Start the dummy web server in the background so Render doesn't crash us
     threading.Thread(target=run_health_server, daemon=True).start()
 
-    # drop_pending_updates=True prevents the 409 Conflict error
     application = Application.builder().token(BOT_TOKEN).build()
     
     application.add_handler(CommandHandler("start", start))
@@ -107,6 +106,7 @@ def main():
     application.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
 
     print("Bot is running...")
+    # drop_pending_updates=True prevents the 409 Conflict error
     application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
