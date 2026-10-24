@@ -8,14 +8,13 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # 1. PUT YOUR BOT TOKEN HERE
 BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
 
-# 2. YOUR DETAILS
+# 2. YOUR DETAILS (UPDATED)
 TELEBIRR_NUMBER = "0935630202"
 TELEBIRR_NAME = "Mekasha"
 YOUR_TELEGRAM_USERNAME = "@Madara_912" 
 
 # 3. YOUR ADMIN ID (So the bot forwards screenshots to YOU)
-# Message @userinfobot on Telegram to get your ID (e.g., 123456789)
-ADMIN_ID = 8327762718 
+ADMIN_ID = 8327762718
 
 # 4. DUMMY WEB SERVER (Fixes Render Timeout)
 class HealthCheckHandler(BaseHTTPRequestHandler):
@@ -73,14 +72,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.message.reply_text(message, parse_mode='Markdown')
 
 async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # This handles when a user sends a photo (screenshot)
     if update.message.photo:
         await update.message.reply_text(
             "✅ Screenshot received! \n\n"
-            "I will verify the payment and send your Redeem Code shortly."
+            "I will verify the payment and send your download link shortly."
         )
         
-        # Forward the screenshot to you (the Admin)
         await context.bot.forward_message(
             chat_id=ADMIN_ID,
             from_chat_id=update.message.chat_id,
