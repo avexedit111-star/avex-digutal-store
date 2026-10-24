@@ -11,9 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
-    /* ============================================================
-       1. DESIGN TOKENS
-       ============================================================ */
     :root {
       --bg-0: #05040a;
       --bg-glass: rgba(20, 16, 34, 0.55);
@@ -30,29 +27,22 @@
       --line-strong: rgba(180, 160, 255, 0.24);
       --grad-brand: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
       --grad-holo: linear-gradient(135deg, #ff6bd6 0%, #b26bff 40%, #4ec5ff 100%);
-      
       --font-sans: "Space Grotesk", system-ui, sans-serif;
       --font-mono: "JetBrains Mono", monospace;
-      
       --fs-eyebrow: 0.75rem;
       --fs-body: 1rem;
       --fs-lede: clamp(1.05rem, 1.4vw, 1.2rem);
       --fs-h3: clamp(1.25rem, 2vw, 1.5rem);
       --fs-h2: clamp(1.8rem, 4.2vw, 3rem);
       --fs-hero: clamp(2.8rem, 10vw, 8rem);
-      
       --sp-1: 0.5rem; --sp-2: 1rem; --sp-3: 1.5rem; --sp-4: 2.5rem;
       --sp-5: 4rem; --sp-6: 6rem; --sp-7: 9rem;
       --r-sm: 8px; --r-md: 14px; --r-lg: 22px; --r-full: 999px;
-      
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
       --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
       --dur-fast: 180ms; --dur-med: 420ms; --dur-slow: 800ms;
     }
 
-    /* ============================================================
-       2. RESET & GLOBAL
-       ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body { font-family: var(--font-sans); font-size: var(--fs-body); line-height: 1.55; color: var(--ink); background: var(--bg-0); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
@@ -61,9 +51,6 @@
     a { color: inherit; text-decoration: none; }
     button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
     
-    /* ============================================================
-       3. BACKGROUND & CURSOR
-       ============================================================ */
     .ambient-bg { position: fixed; inset: 0; z-index: -3; pointer-events: none; overflow: hidden; background: radial-gradient(circle at 50% 50%, #0a0812 0%, #05040a 100%); }
     .ambient-bg__orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.35; animation: floatOrb 20s ease-in-out infinite alternate; will-change: transform; }
     .ambient-bg__orb--1 { width: 60vw; height: 60vw; top: -10%; left: -10%; background: radial-gradient(circle, var(--purple), transparent 60%); }
@@ -80,9 +67,6 @@
     .cursor-dot.is-active { opacity: 1; }
     .cursor-dot.is-hovering { width: 0; height: 0; }
 
-    /* ============================================================
-       4. NAVIGATION & REDEEM
-       ============================================================ */
     .nav { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: calc(100% - 2rem); max-width: 1200px; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1.2rem; background: var(--bg-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--line); border-radius: var(--r-full); transition: all var(--dur-med) var(--ease-soft); }
     .nav.is-loaded { top: 1rem; }
     .nav.is-scrolled { top: 0.5rem; background: var(--bg-glass-strong); border-color: var(--line-strong); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -100,21 +84,13 @@
     .nav__icon { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: var(--r-full); color: var(--ink-soft); background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); transition: all var(--dur-fast); }
     .nav__icon:hover { color: var(--ink); background: rgba(178, 107, 255, 0.12); border-color: var(--purple); }
     
-    .nav__redeem { 
-      display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; 
-      border-radius: var(--r-full); border: 1px solid var(--green); 
-      color: var(--green); font-size: 0.75rem; font-weight: 600; 
-      text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s;
-    }
+    .nav__redeem { display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: var(--r-full); border: 1px solid var(--green); color: var(--green); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s; }
     .nav__redeem:hover { background: rgba(78, 255, 158, 0.1); box-shadow: 0 0 15px rgba(78, 255, 158, 0.3); }
     @media (max-width: 600px) { .nav__redeem span { display: none; } .nav__redeem { padding: 0.5rem; } }
 
     .nav__cart-count { position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; display: grid; place-items: center; font-size: 0.6rem; font-weight: 700; color: #fff; background: var(--grad-brand); border-radius: var(--r-full); }
     @media (min-width: 900px) { .nav__links { display: flex; } }
 
-    /* ============================================================
-       5. HERO & ANIMATION
-       ============================================================ */
     .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 7rem 1rem 4rem; overflow: hidden; isolation: isolate; perspective: 1000px; }
     .hero__grid { position: absolute; bottom: -20%; left: -50%; width: 200%; height: 100%; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 60px 60px; transform: rotateX(75deg); transform-origin: top center; mask-image: linear-gradient(to bottom, transparent, black 40%); -webkit-mask-image: linear-gradient(to bottom, transparent, black 40%); z-index: -1; opacity: 0.4; animation: gridMove 5s linear infinite; }
     @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 0 60px; } }
@@ -164,9 +140,6 @@
     @media (min-width: 400px) { .fp-3 { display: flex; } }
     @media (min-width: 768px) { .fp-1 { top: 25%; left: 10%; } .fp-2 { top: 55%; right: 10%; } .fp-3 { bottom: 20%; left: 15%; width: 160px; } }
 
-    /* ============================================================
-       6. BUTTONS
-       ============================================================ */
     .btn { position: relative; display: inline-flex; align-items: center; gap: 0.6rem; padding: 1rem 1.8rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border-radius: var(--r-full); transition: transform 0.3s var(--ease-out), box-shadow 0.3s; overflow: hidden; }
     .btn--primary { color: #fff; background: var(--bg-0); border: 1px solid var(--blue); box-shadow: inset 0 0 20px rgba(78, 197, 255, 0.1); }
     .btn--primary::before { content: ''; position: absolute; inset: 0; background: var(--grad-brand); opacity: 0; transition: opacity 0.3s; z-index: 0; }
@@ -186,9 +159,6 @@
     .shockwave { position: fixed; border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); border: 2px solid var(--blue); box-shadow: 0 0 20px var(--blue), inset 0 0 20px var(--blue); animation: shock 0.6s ease-out forwards; }
     @keyframes shock { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 150px; height: 150px; opacity: 0; } }
 
-    /* ============================================================
-       7. SECTIONS & CATEGORIES
-       ============================================================ */
     .section { position: relative; padding: var(--sp-5) clamp(1.2rem, 4vw, 3rem); max-width: 1280px; margin: 0 auto; z-index: 2; }
     .section__head { max-width: 640px; margin-bottom: var(--sp-5); }
     .eyebrow { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: 0.24em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.9rem; }
@@ -228,9 +198,6 @@
     .product-card__footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
     .product-card__price { font-size: 1.2rem; font-weight: 600; color: var(--blue); }
 
-    /* ============================================================
-       8. PRODUCT DETAIL OVERLAY
-       ============================================================ */
     .product-modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 1rem; pointer-events: none; }
     .product-modal__bg { position: absolute; inset: 0; background: rgba(5, 4, 10, 0.9); backdrop-filter: blur(20px); opacity: 0; transition: opacity 0.4s var(--ease-out); }
     .product-modal.is-open { pointer-events: auto; }
@@ -256,9 +223,6 @@
     .compat-text { font-size: 0.8rem; color: var(--ink-muted); margin-top: 1rem; display: block; }
     .product-modal__actions { margin-top: auto; display: flex; gap: 1rem; align-items: center; }
 
-    /* ============================================================
-       9. CART DRAWER & CHECKOUT
-       ============================================================ */
     .cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 400px; background: var(--bg-glass-strong); backdrop-filter: blur(20px); border-left: 1px solid var(--line); z-index: 3000; transform: translateX(100%); transition: transform 0.4s var(--ease-out); display: flex; flex-direction: column; }
     .cart-drawer.is-open { transform: translateX(0); }
     .cart-drawer__head { padding: 1.5rem; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
@@ -289,9 +253,6 @@
     .checkout-note { font-size: 0.75rem; color: var(--ink-muted); margin-top: 1rem; line-height: 1.5; }
     .checkout-note strong { color: var(--ink); }
 
-    /* ============================================================
-       10. REDEEM MODAL
-       ============================================================ */
     .redeem-modal { position: fixed; inset: 0; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     .redeem-modal.is-open { opacity: 1; pointer-events: auto; }
     .redeem-modal__bg { position: absolute; inset: 0; background: rgba(5, 4, 10, 0.95); backdrop-filter: blur(30px); }
@@ -305,9 +266,6 @@
     .redeem-input:focus { border-color: var(--green); }
     #redeemMsg { display: none; font-size: 0.85rem; margin-top: 1rem; }
 
-    /* ============================================================
-       11. FOOTER
-       ============================================================ */
     .footer { position: relative; z-index: 2; padding: var(--sp-7) clamp(1.2rem, 4vw, 3rem) var(--sp-4); border-top: 1px solid var(--line); margin-top: var(--sp-6); background: linear-gradient(to bottom, transparent, rgba(5, 4, 10, 0.95)); overflow: hidden; }
     .footer__mega-text { position: absolute; top: 0; left: 50%; transform: translateX(-50%) scale(0.8); font-size: 30vw; font-weight: 700; line-height: 1; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.03); pointer-events: none; z-index: 0; white-space: nowrap; opacity: 0; transition: all 1.5s var(--ease-out); }
     .footer__mega-text.is-visible { transform: translateX(-50%) scale(1); opacity: 1; }
@@ -362,9 +320,8 @@
       <a href="#about">About</a>
     </nav>
     <div class="nav__actions">
-      <button class="nav__icon" id="redeemBtn" aria-label="Redeem Code">
+      <button class="nav__icon" id="redeemBtn" aria-label="Redeem Code" style="border-color: var(--green); color: var(--green);">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 3L3 10.5l6 2.5 2.5 6L21 3z"/></svg>
-        <span class="nav__redeem-text" style="display:none">Redeem</span>
       </button>
       <button class="nav__icon" id="cartBtn" aria-label="Cart">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.5 12h11L21 8H6"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
@@ -543,13 +500,13 @@
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL (TELEGRAM REDIRECT) -->
+  <!-- CHECKOUT MODAL -->
   <div class="checkout-modal" id="checkoutModal">
     <div class="checkout-modal__bg" id="checkoutBg"></div>
     <div class="checkout-modal__content">
       <button class="checkout-modal__close" id="closeCheckout">&times;</button>
       <h2>Complete Your Order</h2>
-      <p>Click below to pay via Telegram and get your download links instantly.</p>
+      <p>Click below to pay via Telegram and get your download links.</p>
       
       <div class="telebirr-box">
         <h4>Order Total</h4>
@@ -577,9 +534,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   
   <script>
-    // ============================================================
-    // 1. OPENING ANIMATION
-    // ============================================================
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.body.classList.add('is-loaded');
@@ -588,7 +542,7 @@
     });
 
     // ============================================================
-    // 2. SECRET REDEEM CODES (EDIT THIS!)
+    // SECRET REDEEM CODES (EDIT THIS!)
     // ============================================================
     // Add your codes here. The bot will send these to the user.
     // Format: "CODE": "GOOGLE DRIVE LINK"
@@ -598,9 +552,6 @@
       "AVEX-CC-003": "https://drive.google.com/file/d/your-cc-link"
     };
 
-    // ============================================================
-    // 3. PRODUCT DATA
-    // ============================================================
     const products = [
       { id: 1, cat: "PFP", title: "Neon Cyber PFP Pack", price: 12.00, desc: "10 high-resolution futuristic avatars with holographic neon lighting.", color: "#b26bff", contents: ["Avatar 01: Cyber Ninja", "Avatar 02: Neon Hacker", "Avatar 03: Glitch Ghost"], compat: "Discord, Twitter (PNG)" },
       { id: 2, cat: "PFP", title: "Anime Glitch Avatars", price: 15.00, desc: "8 stylized anime avatar assets featuring digital glitch aesthetics.", color: "#b26bff", contents: ["Avatar 01: Glitch Eyes", "Avatar 02: VHS Anime", "Avatar 03: Distorted Manga"], compat: "All social platforms (PNG)" },
@@ -612,9 +563,6 @@
       { id: 8, cat: "SOUNDS", title: "Sci-Fi Impact SFX", price: 6.00, desc: "20 deep cinematic bass impacts and transition risers.", color: "#9d6bff", contents: ["Impact 01-05: Heavy Bass", "Riser 01-05: Cinematic Build", "Glitch 01-05: Digital FX"], compat: "Any video/audio editor (WAV)" }
     ];
 
-    // ============================================================
-    // 4. STORE LOGIC
-    // ============================================================
     const grid = document.getElementById('productGrid');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const catBtns = document.querySelectorAll('.cat-btn');
@@ -695,9 +643,6 @@
     document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('is-open'));
     document.getElementById('modalBg').addEventListener('click', () => modal.classList.remove('is-open'));
 
-    // ============================================================
-    // 5. CART & CHECKOUT LOGIC
-    // ============================================================
     let cart = JSON.parse(localStorage.getItem('avex:cart')) || [];
     const cartDrawer = document.getElementById('cartDrawer');
     const checkoutModal = document.getElementById('checkoutModal');
@@ -749,7 +694,6 @@
     document.getElementById('cartBtn').addEventListener('click', () => cartDrawer.classList.add('is-open'));
     document.getElementById('closeCart').addEventListener('click', () => cartDrawer.classList.remove('is-open'));
 
-    // Open Checkout Modal
     document.getElementById('checkoutBtn').addEventListener('click', () => {
       if (cart.length === 0) return alert("Your cart is empty!");
       
@@ -763,12 +707,12 @@
     document.getElementById('closeCheckout').addEventListener('click', () => checkoutModal.classList.remove('is-open'));
     document.getElementById('checkoutBg').addEventListener('click', () => checkoutModal.classList.remove('is-open'));
 
-    // Redirect to Telegram Bot
     document.getElementById('goToBotBtn').addEventListener('click', () => {
-      // REPLACE THIS WITH YOUR ACTUAL BOT LINK
+      // ============================================================
+      // CHANGE THIS TO YOUR BOT LINK
+      // ============================================================
       window.open('https://t.me/Avex_Edit_bot', '_blank');
       
-      // Clear cart
       cart = [];
       localStorage.removeItem('avex:cart');
       updateCartUI();
@@ -776,7 +720,7 @@
     });
 
     // ============================================================
-    // 6. REDEEM SYSTEM LOGIC
+    // REDEEM SYSTEM LOGIC
     // ============================================================
     const redeemModal = document.getElementById('redeemModal');
     document.getElementById('redeemBtn').addEventListener('click', () => {
@@ -802,7 +746,7 @@
     });
 
     // ============================================================
-    // 7. UI ANIMATIONS (Cursor, Magnetic, Reveal, Parallax)
+    // UI ANIMATIONS
     // ============================================================
     const cursor = document.getElementById('cursor');
     const cursorLabel = document.getElementById('cursorLabel');
