@@ -1,9 +1,9 @@
 import logging
 import os
-import sys
 import threading
 import hashlib
 import io
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -19,13 +19,22 @@ BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
 TELEBIRR_NUMBER = "0935630202"
 TELEBIRR_NAME = "Mekasha"
 YOUR_TELEGRAM_USERNAME = "@Madara_912" 
-ADMIN_ID = 8327762718 # REPLACE WITH YOUR REAL ID FROM @userinfobot
+ADMIN_ID = 8327762718 # REPLACE WITH YOUR REAL ID
 
 # ==========================================
-# 2. INITIALIZE FIREBASE
+# 2. INITIALIZE FIREBASE (Using Environment Variable)
 # ==========================================
 try:
-    cred = credentials.Certificate("firebase-key.json")
+    # Try to load from Render's Environment Variable first
+    firebase_json = os.environ.get("FIREBASE_KEY_JSON")
+    
+    if firebase_json:
+        cred_dict = json.loads(firebase_json)
+        cred = credentials.Certificate(cred_dict)
+    else:
+        # If the variable is missing, try loading the file (for local testing)
+        cred = credentials.Certificate("firebase-key.json")
+        
     firebase_admin.initialize_app(cred)
     db = firestore.client()
     print("Firebase connected successfully!")
