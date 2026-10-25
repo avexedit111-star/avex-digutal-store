@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AVEX Admin Panel</title>
   <style>
-    :root { --bg: #05040a; --bg-glass: rgba(20, 16, 34, 0.85); --purple: #b26bff; --blue: #4ec5ff; --ink: #f4f1ff; --line: rgba(180, 160, 255, 0.2); --red: #ff4e6b; }
+    :root { --bg: #05040a; --bg-glass: rgba(20, 16, 34, 0.85); --purple: #b26bff; --blue: #4ec5ff; --ink: #f4f1ff; --line: rgba(180, 160, 255, 0.2); --red: #ff4e6b; --green: #4eff9e; }
     body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--ink); padding: 2rem 1rem; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
     .container { width: 100%; max-width: 600px; }
     .card { background: var(--bg-glass); border: 1px solid var(--line); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; backdrop-filter: blur(10px); }
@@ -14,15 +14,17 @@
     button { background: linear-gradient(135deg, var(--purple), var(--blue)); border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
     button:hover { opacity: 0.8; }
     .error { color: var(--red); text-align: center; margin-bottom: 1rem; display: none; font-size: 0.9rem; }
+    .success { color: var(--green); text-align: center; margin-bottom: 1rem; display: none; font-size: 0.9rem; }
     .hidden { display: none !important; }
     .product-item { background: rgba(0,0,0,0.3); padding: 12px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); }
     .delete-btn { width: auto; padding: 6px 12px; background: var(--red); margin: 0; font-size: 0.8rem; color: white; }
+    label { font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; display: block; text-transform: uppercase; letter-spacing: 1px; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- LOGIN SCREEN -->
+  <!-- LOGIN -->
   <div id="login-screen" class="card">
     <h1>AVEX Admin</h1>
     <div id="login-error" class="error"></div>
@@ -31,17 +33,32 @@
     <button onclick="login()">Login</button>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
+  <!-- DASHBOARD -->
   <div id="admin-screen" class="hidden">
     <div class="card">
       <h2>Add New Product</h2>
       <div id="add-error" class="error"></div>
-      <input type="text" id="title" placeholder="Product Title (e.g., Cyberpunk Edit)">
-      <input type="number" id="price" placeholder="Price in USD (e.g., 15)">
-      <input type="text" id="category" placeholder="Category (PFP, CC, EDITS, SOUNDS)">
-      <input type="text" id="imageUrl" placeholder="Image URL (Optional)">
-      <textarea id="desc" rows="3" placeholder="Description"></textarea>
-      <button onclick="addProduct()">Publish Product</button>
+      <div id="add-success" class="success"></div>
+      
+      <label>Product Title</label>
+      <input type="text" id="title" placeholder="e.g. Cyberpunk PFP Pack">
+      
+      <label>Price (USD)</label>
+      <input type="number" id="price" placeholder="e.g. 12">
+      
+      <label>Category</label>
+      <input type="text" id="category" placeholder="e.g. PFP, EDITS, CC, SOUNDS">
+      
+      <label>Preview Image URL (What they see)</label>
+      <input type="text" id="imageUrl" placeholder="https://imgur.com/your-image.jpg">
+      
+      <label>Download Link (What they get)</label>
+      <input type="text" id="downloadUrl" placeholder="https://drive.google.com/your-zip-file">
+      
+      <label>Description</label>
+      <textarea id="desc" rows="3" placeholder="Describe the product..."></textarea>
+      
+      <button onclick="addProduct()" style="margin-top: 1rem;">Publish Product</button>
       <button onclick="logout()" style="background: transparent; border: 1px solid var(--line); margin-top: 10px;">Logout</button>
     </div>
 
@@ -100,25 +117,37 @@
     const price = parseFloat(document.getElementById('price').value);
     const cat = document.getElementById('category').value.toUpperCase();
     const img = document.getElementById('imageUrl').value;
+    const downloadUrl = document.getElementById('downloadUrl').value;
     const desc = document.getElementById('desc').value;
+    
     const err = document.getElementById('add-error');
+    const succ = document.getElementById('add-success');
 
-    if(!title || !price || !cat) {
-      err.textContent = "Please fill out Title, Price, and Category.";
+    if(!title || !price || !cat || !downloadUrl) {
+      err.textContent = "Please fill out Title, Price, Category, and Download Link.";
       err.style.display = "block";
+      succ.style.display = "none";
       return;
     }
 
     try {
       await addDoc(collection(db, "products"), {
-        title, price, cat, img, desc, createdAt: new Date()
+        title, price, cat, img, desc, downloadUrl, createdAt: new Date()
       });
+      
+      // Clear inputs
       document.getElementById('title').value = '';
       document.getElementById('price').value = '';
       document.getElementById('category').value = '';
       document.getElementById('imageUrl').value = '';
+      document.getElementById('downloadUrl').value = '';
       document.getElementById('desc').value = '';
+      
       err.style.display = "none";
+      succ.textContent = "Product Published Successfully!";
+      succ.style.display = "block";
+      setTimeout(() => succ.style.display = "none", 3000);
+      
       loadProducts();
     } catch(e) {
       err.textContent = "Error: " + e.message;
@@ -133,7 +162,7 @@
     container.innerHTML = "";
     
     if(querySnapshot.empty) {
-      container.innerHTML = "<p>No products found. Add one above!</p>";
+      container.innerHTML = "<p>No products found.</p>";
       return;
     }
 
