@@ -8,13 +8,13 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # 1. PUT YOUR BOT TOKEN HERE
 BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
 
-# 2. YOUR DETAILS (UPDATED)
+# 2. YOUR DETAILS
 TELEBIRR_NUMBER = "0935630202"
 TELEBIRR_NAME = "Mekasha"
 YOUR_TELEGRAM_USERNAME = "@Madara_912" 
 
-# 3. YOUR ADMIN ID (So the bot forwards screenshots to YOU)
-ADMIN_ID = 8327762718
+# 3. YOUR ADMIN ID
+ADMIN_ID = 8327762718 
 
 # 4. DUMMY WEB SERVER (Fixes Render Timeout)
 class HealthCheckHandler(BaseHTTPRequestHandler):
@@ -66,15 +66,28 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Send {price} to Telebirr: `{TELEBIRR_NUMBER}` (Name: {TELEBIRR_NAME}).\n\n"
         f"🌍 **International:**\n"
         f"Message me at {YOUR_TELEGRAM_USERNAME} to pay via PayPal.\n\n"
-        f"👇 **After paying, send the screenshot here.**"
+        f"👇 **After paying, send the screenshot here with a caption containing the word 'PAID'.**\n"
+        f"*(Example: '12 USD PAID')*"
     )
     
     await query.message.reply_text(message, parse_mode='Markdown')
 
 async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.photo:
+        caption = update.message.caption
+        
+        # THE FILTER: Check if the caption exists and has the required word
+        if not caption or "PAID" not in caption.upper():
+            await update.message.reply_text(
+                "⚠️ **Action Rejected:**\n\n"
+                "You must type the word **PAID** in the text box along with the amount before sending the screenshot.\n"
+                "*(Example: 12 USD PAID)*"
+            )
+            return # Stop right here, do not forward
+
+        # If it passes the filter, forward to you
         await update.message.reply_text(
-            "✅ Screenshot received! \n\n"
+            f"✅ Screenshot received with note: '{caption}'\n\n"
             "I will verify the payment and send your download link shortly."
         )
         
