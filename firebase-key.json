@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "avex-store",
+  "private_key_id": "a098fa425cecc29585a0ad18ebe6b1e51003ce03",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDcgd6HX7hXPnAd\nDD22DNwuZoEwrKqUAURLTZEwqBiRsfPV9axScswC7b7VMPcXvY0hu03z8JLYQqvn\n7JTqGElxEcsylUmRFkT3suAzPXILY3LcGnv3p74mlbT4+CNh5SUQdrfqHypOZWqf\nZZwC044DsSduyjwr/y4h/Y+ckV3vpdudpkXChOHsPAFh5GvjbGBHREd1Y10Zo9jN\nRPmoQRgdCtfVpfBXoVGLFsisx8jSy0IC9yc1OJejVvdH2TapGrkKBBc1DtYPIVT8\ntbl14NHVLQnqkwq1+dHchp1bLZNJj/a8bNonzUIyVHVoDw+FfrAQMA29AUX7zWl2\nR1MDZycnAgMBAAECggEAaYXiupDllCamm1gIzi6gTbozF9qBdPuYNZskoI7I1yw8\nPodnVDtogvxIJxjcHmnQ+LP8bYESnNhnEMFoUBCYULpNreLARmTMU2cwIIVGpsmM\nJWWtLoqBFlDtPnns4MO6NYNCpxEL+2FQIYCMJNQdsYmdD8lK+1kOOCjyCWCNfglS\n3+TiiOASL0At44PVWMGQ4dAaOVnhEM8v2peL3T0PUupAfv7mEeT3uhKt75YcUJRQ\nBNmHjYzKkLJ7sKbpmr+jLo4G4I3UUdNGWFw9tZkBnI3a/ymPXqrdlCQ0k1oTyG3u\nMAsvEcfKyC5dVEgHduklgn9u52iNd2EpexsJ9X163QKBgQD8Dyk1RIxX9KUAo+Wc\nwtUCuHSD5AU9dSgmHpxR0YkPQ+l9mV4UATBkZYnvPdgDO7H1Hq609S5UoAPsO4Iu\nt/3p6qhjOkulwT4OJq6SjS0o8tb1Lrq3xYgF0RNyZLEE2IIQ8PTZ/sn6f6fL6zoi\nvdigg2+UbWSDMKqOeaov2feI7QKBgQDf9GzbrpH4msxhlPOwS9/OursMAuzUzl4a\nY9yLtDdUfLuigVdjuGu2qjv4UpVY4hAwqPX2v8g92aht2fnNv87xP7Jg2c7saRKX\nBCyw9/wKPCycRANm5BFtXdMdDq7xcRwUR/ZAOH+Yn1DMxwoKh22rgv98aPUmm0P0\nubNcCvUR4wKBgQDCwMAZPU6mwwselIRb/BnzkSvNoEgANV6BHZOwkBKzbcih1/dd\nw5FtcRsDdChMTzpv53YbsXlLv5toUo6CpH0W2M2kZa1/c/ELpA2shFJJWmCGbsWs\nKn6v59x7vZsc4GCW0GaPbRMIbsvqfmSb5U3Ur9ltuJw51Udi8FRzxplA/QKBgQCJ\nWT1d6Y1Ke513B0QAzje/cJQAhNa8mKfr5WzAHVGFtk3ZFxwCY3tj9rl6zSMc9N/b\nB/R5VRs4m4GJhZKHlegT2u3KKiqWoMYu6feCvUPM/ySY3bl8Y8kwWsd73aJ7HtSK\nt6uVrVDLyIFkZXmKBY7EDj4kDbaz66tcrnsKqwmr4wKBgQC1sdSQY+eVeuiN8nLS\na6MVxHI9gRpaHgaoQMTmCNNlVvoUingiEgvoCUNZchx/I3QAViipcU9RRvMr3z68\n5eGmdRZsSJenjJNkRojh4Ppp5uulOaNDSw0+EIM6ckokjyvNvMvIL1qfsXgVhj9H\ns9QIc3q4Z8oYK3LScRkyqeROxg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@avex-store.iam.gserviceaccount.com",
+  "client_id": "109640332577572863201",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40avex-store.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
