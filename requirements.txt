@@ -1,4 +1,4 @@
 python-telegram-bot
-firebase-admin
+firebase_admin
 pytesseract
 Pillow
