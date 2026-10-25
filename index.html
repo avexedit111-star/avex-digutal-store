@@ -2,18 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AVEX STORE — Enter The Next Dimension</title>
-  <meta name="description" content="Premium digital assets for creators." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05040a" />
+  <title>AVEX — Enter The Next Dimension</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
   <style>
     :root {
@@ -24,19 +19,14 @@
       --border: rgba(140, 100, 255, 0.18);
       --border-strong: rgba(160, 120, 255, 0.45);
       --purple: #a855f7;
-      --purple-glow: #8b5cf6;
       --blue: #22d3ee;
-      --blue-glow: #38bdf8;
       --pink: #f472b6;
       --green: #4eff9e;
       --red: #ff4e6b;
       --text: #f5f3ff;
       --muted: #a89fc9;
-      --muted-2: #6b6388;
-      --radius: 16px;
       --font-display: 'Orbitron', sans-serif;
       --font-body: 'Space Grotesk', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -49,57 +39,71 @@
       overflow-x: hidden;
       line-height: 1.6;
     }
+    @media (max-width: 900px) { body { cursor: auto; } }
+    @media (pointer: fine) { body { cursor: none; } }
 
     /* ============================================================
-       LOADER
+       CUSTOM CURSOR
        ============================================================ */
-    #loader {
-      position: fixed; inset: 0; z-index: 10000; background: #05040a;
-      display: grid; place-items: center; overflow: hidden;
+    .cursor-dot, .cursor-ring {
+      position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+      border-radius: 50%; transform: translate(-50%, -50%); mix-blend-mode: screen;
     }
-    #loader::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(168,85,247,0.15), transparent 60%),
-                  radial-gradient(circle at 50% 50%, rgba(34,211,238,0.1), transparent 70%);
-      animation: loaderPulse 3s ease-in-out infinite;
+    .cursor-dot { width: 6px; height: 6px; background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+    .cursor-ring {
+      width: 34px; height: 34px; border: 1px solid rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.35);
+      transition: transform 0.15s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
     }
-    @keyframes loaderPulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
-    .loader-inner { position: relative; display: flex; flex-direction: column; align-items: center; gap: 30px; z-index: 2; }
-    .loader-logo {
-      font-family: var(--font-display); font-weight: 900; font-size: clamp(48px, 10vw, 120px);
-      letter-spacing: 12px;
-      background: linear-gradient(120deg, #ffffff, #c4b5fd, #67e8f9, #f0abfc, #ffffff);
-      background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; color: transparent;
-      animation: loaderGradient 2.5s ease-in-out infinite; filter: drop-shadow(0 0 40px rgba(168,85,247,0.6));
+    .cursor-ring.hover {
+      width: 52px; height: 52px; border-color: var(--blue);
+      box-shadow: 0 0 24px rgba(34, 211, 238, 0.6);
     }
-    @keyframes loaderGradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-    .loader-sub { font-family: var(--font-body); font-size: 12px; letter-spacing: 8px; color: var(--muted); text-transform: uppercase; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(20px); } }
-    .loader-bar-wrap { width: min(400px, 70vw); height: 2px; background: rgba(140, 100, 255, 0.15); border-radius: 999px; overflow: hidden; margin-top: 10px; }
-    .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--purple), var(--blue), var(--pink)); box-shadow: 0 0 20px rgba(168,85,247,0.8); transition: width 0.1s linear; border-radius: 999px; }
-    .loader-percent { font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; color: var(--blue); margin-top: 8px; text-shadow: 0 0 10px var(--blue); }
+    @media (max-width: 900px) { .cursor-dot, .cursor-ring { display: none; } }
 
     /* ============================================================
-       4D CYBERPUNK BACKGROUND
+       4D BACKGROUND
        ============================================================ */
-    .bg-layer { position: fixed; inset: 0; z-index: -5; background: radial-gradient(1400px 900px at 15% -10%, rgba(139, 92, 246, 0.28), transparent 60%), radial-gradient(1200px 800px at 90% 10%, rgba(56, 189, 248, 0.2), transparent 60%), linear-gradient(180deg, #05040a 0%, #08060f 40%, #05040a 100%); }
-    .cyber-sun { position: fixed; bottom: 18vh; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(244,114,182,0.35) 0%, rgba(168,85,247,0.15) 40%, transparent 70%); z-index: -4; filter: blur(40px); animation: sunPulse 8s ease-in-out infinite; }
-    @keyframes sunPulse { 0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.7; } 50% { transform: translateX(-50%) scale(1.08); opacity: 1; } }
-    
-    .city-layer { position: fixed; bottom: 0; left: 0; right: 0; z-index: -3; height: 60vh; background-repeat: repeat-x; background-position: bottom; }
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -5;
+      background: radial-gradient(1400px 900px at 15% -10%, rgba(139, 92, 246, 0.28), transparent 60%),
+                  radial-gradient(1200px 800px at 90% 10%, rgba(56, 189, 248, 0.2), transparent 60%),
+                  linear-gradient(180deg, #05040a 0%, #08060f 40%, #05040a 100%);
+    }
+    .cyber-sun {
+      position: fixed; bottom: 18vh; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,114,182,0.35) 0%, rgba(168,85,247,0.15) 40%, transparent 70%);
+      z-index: -4; filter: blur(40px); animation: sunPulse 8s ease-in-out infinite;
+    }
+    @keyframes sunPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.7; }
+      50% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+    }
+    .city-layer { position: fixed; bottom: 0; left: 0; right: 0; z-index: -3; height: 60vh; background-repeat: repeat-x; background-position: bottom; will-change: transform; }
     .city-far { height: 40vh; background-image: linear-gradient(to top, rgba(20, 10, 40, 0.9), transparent), repeating-linear-gradient(90deg, transparent 0px, transparent 24px, rgba(80, 50, 130, 0.35) 24px, rgba(80, 50, 130, 0.35) 60px, transparent 60px, transparent 90px, rgba(60, 40, 110, 0.3) 90px, rgba(60, 40, 110, 0.3) 130px); mask-image: linear-gradient(to top, black 30%, transparent 100%); -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%); opacity: 0.7; }
     .city-mid { height: 45vh; background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(25, 15, 50, 0.95) 12px, rgba(25, 15, 50, 0.95) 70px, transparent 70px, transparent 95px, rgba(18, 10, 38, 0.95) 95px, rgba(18, 10, 38, 0.95) 150px); mask-image: linear-gradient(to top, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%); }
     .city-near { height: 35vh; background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 8px, rgba(8, 4, 18, 1) 8px, rgba(8, 4, 18, 1) 80px, transparent 80px, transparent 130px, rgba(5, 2, 12, 1) 130px, rgba(5, 2, 12, 1) 220px); mask-image: linear-gradient(to top, black 50%, transparent 100%); -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%); }
-    
-    .cyber-grid { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) perspective(400px) rotateX(65deg); transform-origin: center bottom; width: 300vw; height: 60vh; z-index: -2; background-image: linear-gradient(rgba(168, 85, 247, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.35) 1px, transparent 1px); background-size: 60px 60px; mask-image: linear-gradient(to top, black 0%, transparent 90%); -webkit-mask-image: linear-gradient(to top, black 0%, transparent 90%); animation: gridScroll 3s linear infinite; opacity: 0.6; }
+    .cyber-grid {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) perspective(400px) rotateX(65deg);
+      transform-origin: center bottom; width: 300vw; height: 60vh; z-index: -2; pointer-events: none;
+      background-image: linear-gradient(rgba(168, 85, 247, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.35) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: linear-gradient(to top, black 0%, transparent 90%); -webkit-mask-image: linear-gradient(to top, black 0%, transparent 90%);
+      animation: gridScroll 3s linear infinite; opacity: 0.6;
+    }
     @keyframes gridScroll { to { background-position: 0 60px, 0 0; } }
-
     #particles-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.7; }
 
     /* ============================================================
-       NAV
+       NAVIGATION
        ============================================================ */
-    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 0; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: linear-gradient(180deg, rgba(5,4,10,0.85), rgba(5,4,10,0.4)); border-bottom: 1px solid var(--border); transition: padding 0.3s; }
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 0;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(5,4,10,0.85), rgba(5,4,10,0.4));
+      border-bottom: 1px solid var(--border); transition: padding 0.3s;
+    }
     .nav.scrolled { padding: 10px 0; border-bottom-color: var(--border-strong); }
     .nav-inner { max-width: 1240px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
     .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 900; letter-spacing: 2px; font-size: 22px; text-decoration: none; color: var(--text); }
@@ -114,18 +118,26 @@
     .cart-count { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; border-radius: 999px; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #05040a; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; box-shadow: 0 0 10px rgba(168,85,247,0.6); }
 
     /* ============================================================
-       HERO
+       HERO SECTION
        ============================================================ */
     .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 24px 80px; overflow: hidden; }
-    .hero-inner { max-width: 1240px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
-    @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } }
+    .hero-inner { max-width: 1240px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+    @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; } }
+    
+    .hero-text { position: relative; z-index: 2; }
     .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border-strong); background: rgba(20, 14, 36, 0.6); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 24px; }
     .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 10px var(--blue); animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.6; } }
-    .hero h1 { font-family: var(--font-display); font-size: clamp(38px, 6.5vw, 84px); font-weight: 900; line-height: 1.02; letter-spacing: -1px; margin-bottom: 24px; }
+    
+    .hero h1 { font-family: var(--font-display); font-size: clamp(36px, 5vw, 72px); font-weight: 900; line-height: 1.05; letter-spacing: -1px; margin-bottom: 24px; }
+    .hero h1 .word { display: inline-block; opacity: 0; transform: translateY(20px); }
     .grad-text { background: linear-gradient(120deg, #ffffff 0%, #c4b5fd 35%, #67e8f9 65%, #f0abfc 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .hero p.lead { font-size: clamp(15px, 1.6vw, 18px); color: var(--muted); max-width: 560px; margin-bottom: 36px; }
-    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+    
+    .hero p.lead { font-size: clamp(15px, 1.6vw, 18px); color: var(--muted); max-width: 560px; margin-bottom: 36px; line-height: 1.6; }
+    @media (max-width: 900px) { .hero p.lead { margin: 0 auto 36px; } }
+    
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+    @media (max-width: 900px) { .hero-cta { justify-content: center; } }
 
     /* BUTTONS */
     .btn { position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; border: 1px solid transparent; transition: transform 0.2s, box-shadow 0.3s; overflow: hidden; font-family: var(--font-body); }
@@ -133,16 +145,56 @@
     .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 40px rgba(168,85,247,0.7), 0 0 80px rgba(34,211,238,0.35); }
     .btn-ghost { background: rgba(20, 14, 36, 0.6); color: var(--text); border-color: var(--border-strong); }
     .btn-ghost:hover { transform: translateY(-3px); box-shadow: 0 0 24px rgba(168,85,247,0.4); border-color: var(--blue); }
-
-    .hero-visual { position: relative; display: grid; place-items: center; min-height: 420px; }
-    .hex-card { position: relative; width: 280px; height: 340px; border-radius: 24px; background: linear-gradient(160deg, rgba(30, 20, 52, 0.9), rgba(10, 7, 20, 0.9)); border: 1px solid var(--border-strong); backdrop-filter: blur(20px); box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(168,85,247,0.3); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; padding: 30px; animation: heroFloat 6s ease-in-out infinite; }
-    @keyframes heroFloat { 0%, 100% { transform: perspective(1000px) rotateY(-8deg) rotateX(6deg) translateY(0); } 50% { transform: perspective(1000px) rotateY(-4deg) rotateX(2deg) translateY(-16px); } }
-    .hex-card .mark { font-family: var(--font-display); font-weight: 900; font-size: 56px; letter-spacing: 4px; background: linear-gradient(135deg, #fff, #c4b5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px rgba(168,85,247,0.5); }
-    .hex-card .sub { color: var(--muted); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
-    .hex-card .badge { padding: 4px 12px; border-radius: 999px; font-size: 10px; letter-spacing: 2px; color: var(--blue); border: 1px solid rgba(34,211,238,0.4); background: rgba(34,211,238,0.08); }
+    
+    /* MAGNETIC EFFECT */
+    .magnetic { display: inline-block; }
 
     /* ============================================================
-       SECTIONS & PRODUCTS
+       HERO VISUAL — 3D HOLOGRAM
+       ============================================================ */
+    .hero-visual { position: relative; display: grid; place-items: center; min-height: 480px; perspective: 1000px; }
+    .orb { position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, rgba(168,85,247,0.4), rgba(34,211,238,0.2) 45%, transparent 70%); filter: blur(30px); animation: float 8s ease-in-out infinite; }
+    .orb-2 { width: 220px; height: 220px; background: radial-gradient(circle at 70% 70%, rgba(244,114,182,0.4), transparent 70%); animation-delay: -3s; top: 15%; right: 10%; }
+    @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(20px, -30px) scale(1.05); } }
+
+    .hologram { position: relative; width: 280px; height: 360px; transform-style: preserve-3d; animation: heroFloat 8s ease-in-out infinite; }
+    @keyframes heroFloat {
+      0%, 100% { transform: perspective(1000px) rotateY(-10deg) rotateX(5deg) translateY(0); }
+      50% { transform: perspective(1000px) rotateY(-5deg) rotateX(2deg) translateY(-20px); }
+    }
+    
+    .holo-card {
+      position: absolute; inset: 0; border-radius: 24px;
+      background: linear-gradient(160deg, rgba(30, 20, 52, 0.85), rgba(10, 7, 20, 0.95));
+      border: 1px solid var(--border-strong);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 60px rgba(168,85,247,0.3), inset 0 0 40px rgba(34,211,238,0.08);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; padding: 30px;
+      z-index: 2;
+    }
+    .holo-card::before {
+      content: ''; position: absolute; inset: -1px; border-radius: 24px;
+      background: linear-gradient(135deg, var(--purple), var(--blue), var(--pink), var(--purple));
+      background-size: 300% 300%; z-index: -1; animation: borderFlow 4s linear infinite; opacity: 0.8;
+    }
+    @keyframes borderFlow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+    
+    .holo-card .mark { font-family: var(--font-display); font-weight: 900; font-size: 60px; letter-spacing: 4px; background: linear-gradient(135deg, #fff, #c4b5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px rgba(168,85,247,0.5); }
+    .holo-card .sub { color: var(--muted); font-size: 12px; letter-spacing: 3px; text-transform: uppercase; text-align: center; }
+    .holo-card .badge { padding: 4px 12px; border-radius: 999px; font-size: 10px; letter-spacing: 2px; color: var(--blue); border: 1px solid rgba(34,211,238,0.4); background: rgba(34,211,238,0.08); }
+
+    /* Orbital Rings */
+    .hologram .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1px solid rgba(168,85,247,0.25); transform-style: preserve-3d; pointer-events: none; }
+    .hologram .ring:nth-child(1) { width: 380px; height: 380px; transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg); animation: orbit1 12s linear infinite; border-color: rgba(34,211,238,0.4); }
+    .hologram .ring:nth-child(2) { width: 320px; height: 320px; transform: translate(-50%, -50%) rotateY(70deg) rotateZ(0deg); animation: orbit2 15s linear infinite reverse; border-color: rgba(244,114,182,0.4); }
+    .hologram .ring:nth-child(3) { width: 440px; height: 440px; transform: translate(-50%, -50%) rotateX(45deg) rotateY(45deg); animation: orbit3 20s linear infinite; border-style: dashed; opacity: 0.5; }
+    
+    @keyframes orbit1 { 0% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateX(70deg) rotateZ(360deg); } }
+    @keyframes orbit2 { 0% { transform: translate(-50%, -50%) rotateY(70deg) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateY(70deg) rotateZ(360deg); } }
+    @keyframes orbit3 { 0% { transform: translate(-50%, -50%) rotateX(45deg) rotateY(45deg) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateX(45deg) rotateY(45deg) rotateZ(360deg); } }
+
+    /* ============================================================
+       STORE & PRODUCTS
        ============================================================ */
     section { position: relative; padding: 100px 24px; }
     .container { max-width: 1240px; margin: 0 auto; }
@@ -156,8 +208,8 @@
     .filter-btn:hover, .filter-btn.active { color: #05040a; border-color: transparent; box-shadow: 0 0 20px rgba(168,85,247,0.5); background: linear-gradient(135deg, var(--purple), var(--blue)); transform: translateY(-2px); }
 
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; }
-    .product-card { position: relative; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(14px); overflow: hidden; transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s; cursor: pointer; }
-    .product-card:hover { border-color: var(--border-strong); box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 50px rgba(168,85,247,0.28); }
+    .product-card { position: relative; border-radius: 16px; background: var(--panel); border: 1px solid var(--border); backdrop-filter: blur(14px); overflow: hidden; transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s; cursor: pointer; }
+    .product-card:hover { border-color: var(--border-strong); box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 50px rgba(168,85,247,0.28); transform: translateY(-6px); }
     .product-thumb { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: linear-gradient(135deg, #1a1230, #0a0714); }
     .product-thumb::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(168,85,247,0.4), transparent 60%), radial-gradient(circle at 70% 70%, rgba(34,211,238,0.3), transparent 60%); z-index: 0; transition: transform 0.6s; }
     .product-card:hover .product-thumb::before { transform: scale(1.15); }
@@ -170,7 +222,7 @@
     .product-desc { font-size: 12px; color: var(--muted); }
 
     /* ============================================================
-       MODALS & CART (Preserved from previous)
+       CART & MODALS
        ============================================================ */
     .cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(400px, 100%); background: linear-gradient(180deg, rgba(15,10,26,0.98), rgba(5,4,10,0.98)); border-left: 1px solid var(--border-strong); z-index: 400; transform: translateX(105%); transition: transform 0.4s; display: flex; flex-direction: column; }
     .cart-drawer.open { transform: translateX(0); }
@@ -186,36 +238,30 @@
     .checkout-modal, .redeem-modal { position: fixed; inset: 0; z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     .checkout-modal.is-open, .redeem-modal.is-open { opacity: 1; pointer-events: auto; }
     .modal-bg { position: absolute; inset: 0; background: rgba(5, 4, 10, 0.95); backdrop-filter: blur(30px); }
-    .modal-content { position: relative; background: var(--panel-strong); border: 1px solid var(--border-strong); border-radius: var(--radius); width: 100%; max-width: 500px; padding: 2.5rem; box-shadow: 0 30px 80px rgba(0,0,0,0.8); transform: translateY(20px); transition: transform 0.4s; text-align: center; }
+    .modal-content { position: relative; background: var(--panel-strong); border: 1px solid var(--border-strong); border-radius: 16px; width: 100%; max-width: 500px; padding: 2.5rem; box-shadow: 0 30px 80px rgba(0,0,0,0.8); transform: translateY(20px); transition: transform 0.4s; text-align: center; }
     .checkout-modal.is-open .modal-content, .redeem-modal.is-open .modal-content { transform: translateY(0); }
     .modal-content h2 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; }
     .modal-content p { color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem; }
     .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
 
-    .telebirr-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; text-align: left; }
+    .telebirr-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; text-align: left; }
     .telebirr-box h4 { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; text-transform: uppercase; }
     .telebirr-box .number { font-size: 1.5rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; }
 
     /* ============================================================
        UTILITIES
        ============================================================ */
-    .reveal { opacity: 0; transform: translateY(40px); }
-    .reveal.in { opacity: 1; transform: translateY(0); transition: opacity 0.9s, transform 0.9s; }
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 100px); padding: 14px 22px; border-radius: 12px; background: var(--panel-strong); border: 1px solid var(--border-strong); color: var(--text); font-size: 14px; z-index: 5000; opacity: 0; transition: all 0.35s; pointer-events: none; }
     .toast.show { transform: translate(-50%, 0); opacity: 1; }
+    
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
   </style>
 </head>
 <body>
 
-  <!-- LOADER -->
-  <div id="loader">
-    <div class="loader-inner">
-      <div class="loader-logo">ΛVΞX</div>
-      <div class="loader-sub">STORE · V2</div>
-      <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
-      <div class="loader-percent" id="loaderPercent">0%</div>
-    </div>
-  </div>
+  <!-- CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
   <!-- BACKGROUND -->
   <div class="bg-layer"></div>
@@ -252,19 +298,31 @@
     <div class="hero-inner">
       <div class="hero-text">
         <div class="hero-eyebrow"><span class="pulse-dot"></span><span>AVEX STORE V2 — Online</span></div>
-        <h1><span class="grad-text">FUTURE</span><br><span class="grad-text">OF DIGITAL</span><br><span class="grad-text">CREATION</span></h1>
-        <p class="lead">Step into the AVEX digital marketplace — premium PFPs, Color Corrections, Edits, Twixtors, Intros &amp; Outros, Watermarks, and Sounds.</p>
+        <h1>
+          <span class="word">CREATE</span> <span class="word">BEYOND</span> <br>
+          <span class="word grad-text">REALITY.</span>
+        </h1>
+        <p class="lead">Enter the AVEX digital universe — premium PFPs, Color Corrections, Edits, Twixtors, Intros &amp; Outros, Watermarks, and Sounds.</p>
         <div class="hero-cta">
-          <a href="#store" class="btn btn-primary" data-ripple>EXPLORE STORE →</a>
-          <a href="#categories" class="btn btn-ghost" data-ripple>Browse Categories</a>
+          <a href="#store" class="btn btn-primary magnetic" data-ripple>EXPLORE THE STORE →</a>
+          <a href="#categories" class="btn btn-ghost magnetic" data-ripple>DISCOVER CATEGORIES</a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hex-card">
-          <div class="badge">★ PREMIUM DROP</div>
-          <div class="mark">ΛVΞX</div>
-          <div class="sub">STORE · V2</div>
-          <div class="badge">CYBERPUNK EDITION</div>
+      
+      <!-- HOLOGRAM -->
+      <div class="hero-visual" id="heroVisual">
+        <div class="orb"></div>
+        <div class="orb orb-2"></div>
+        <div class="hologram" id="hologram">
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="holo-card">
+            <div class="badge">★ PREMIUM DROP</div>
+            <div class="mark">ΛVΞX</div>
+            <div class="sub">DIGITAL UNIVERSE<br>STORE V2</div>
+            <div class="badge">CYBERPUNK EDITION</div>
+          </div>
         </div>
       </div>
     </div>
@@ -273,12 +331,12 @@
   <!-- STORE -->
   <section id="store">
     <div class="container">
-      <div class="section-head reveal">
+      <div class="section-head">
         <div class="section-tag">Featured Products</div>
         <h2 class="grad-text">The Vault</h2>
         <p>Handpicked digital assets from the AVEX collection.</p>
       </div>
-      <div class="filter-bar reveal" id="filterBar"></div>
+      <div class="filter-bar" id="filterBar"></div>
       <div class="products-grid" id="productsGrid">
         <p style="color:var(--muted); text-align:center; grid-column:1/-1;">Loading products...</p>
       </div>
@@ -306,13 +364,11 @@
       <button class="modal-close" id="closeCheckout">&times;</button>
       <h2>Complete Your Order</h2>
       <p>Click below to pay via Telegram and get your download links.</p>
-      
       <div class="telebirr-box">
         <h4>Order Total</h4>
         <div class="number" style="color:var(--blue)" id="checkoutTotalDisplay">$0.00</div>
       </div>
-
-      <button class="btn btn-primary" id="goToBotBtn" style="width:100%; justify-content:center; margin-bottom:1rem;">PAY VIA TELEGRAM</button>
+      <button class="btn btn-primary" id="goToBotBtn" style="width:100%; justify-content:center; margin-bottom:1rem;" data-ripple>PAY VIA TELEGRAM</button>
       <p style="font-size:0.75rem; color:var(--muted);">After payment, the bot will give you a <strong>Redeem Code</strong>.</p>
     </div>
   </div>
@@ -325,16 +381,20 @@
       <h2 style="color:var(--green);">Redeem Asset</h2>
       <p>Enter the code sent to you by the Telegram bot.</p>
       <input type="text" id="redeemInput" placeholder="AVEX-XXXX-XXXX" style="width:100%; padding:1rem; border-radius:12px; background:rgba(0,0,0,0.5); border:1px solid var(--border); color:#fff; font-family:var(--font-mono); text-align:center; font-size:1.1rem; outline:none; margin-bottom:1rem; text-transform:uppercase;">
-      <button class="btn btn-primary" id="redeemSubmitBtn" style="width:100%; justify-content:center;">UNLOCK FILES</button>
+      <button class="btn btn-primary" id="redeemSubmitBtn" style="width:100%; justify-content:center;" data-ripple>UNLOCK FILES</button>
       <p id="redeemMsg" style="display:none; font-size:0.85rem; margin-top:1rem;"></p>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <!-- ANIMATION LIBRARIES -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <script type="module">
     // ==========================================
-    // FIREBASE SETUP
+    // FIREBASE
     // ==========================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -356,38 +416,7 @@
     let currentFilter = 'ALL';
 
     // ==========================================
-    // LOADER
-    // ==========================================
-    function runLoader() {
-      return new Promise((resolve) => {
-        const bar = document.getElementById('loaderBar');
-        const pct = document.getElementById('loaderPercent');
-        const loader = document.getElementById('loader');
-        let progress = 0;
-        const tick = setInterval(() => {
-          progress += Math.random() * 15 + 5;
-          if (progress >= 100) {
-            progress = 100; clearInterval(tick);
-            bar.style.width = '100%'; pct.textContent = '100%';
-            setTimeout(() => {
-              if (typeof gsap !== 'undefined') {
-                const tl = gsap.timeline({ onComplete: resolve });
-                tl.to('.loader-inner', { scale: 1.3, opacity: 0, duration: 0.5, ease: 'power3.in' });
-                tl.to(loader, { opacity: 0, duration: 0.4, onComplete: () => loader.style.display = 'none' });
-              } else {
-                loader.style.display = 'none'; resolve();
-              }
-            }, 200);
-          } else {
-            bar.style.width = progress + '%';
-            pct.textContent = Math.floor(progress) + '%';
-          }
-        }, 100);
-      });
-    }
-
-    // ==========================================
-    // FIREBASE FETCH
+    // DATA FETCH
     // ==========================================
     async function fetchProducts() {
       const grid = document.getElementById('productsGrid');
@@ -424,7 +453,7 @@
         return;
       }
 
-      grid.innerHTML = list.map((p, i) => `
+      grid.innerHTML = list.map((p) => `
         <article class="product-card" onclick="openModal('${p.id}')">
           <div class="product-thumb">
             <div class="glyph">${p.img ? `<img src="${p.img}" style="width:100%; height:100%; object-fit:cover;">` : p.title.substring(0,2).toUpperCase()}</div>
@@ -468,7 +497,7 @@
         document.getElementById('cartTotal').textContent = '$0.00';
         return;
       }
-      body.innerHTML = cart.map((item, i) => `
+      body.innerHTML = cart.map((item) => `
         <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid var(--border);">
           <div><h5 style="color:#fff;">${item.title}</h5><p style="font-size:0.8rem; color:var(--muted);">${item.cat}</p></div>
           <div style="color:var(--blue); font-weight:bold;">$${item.price.toFixed(2)}</div>
@@ -509,7 +538,7 @@
     });
 
     // ==========================================
-    // REDEEM SYSTEM
+    // REDEEM
     // ==========================================
     document.getElementById('redeemBtn').addEventListener('click', () => {
       document.getElementById('redeemModal').classList.add('is-open');
@@ -574,7 +603,7 @@
       window.addEventListener('scroll', () => { scrollY = window.scrollY; });
       function loop() {
         const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-        const ox = (mx - cx) / cx, oy = (my - cy) / cy;
+        const ox = (mx - cx) / cx;
         if(far) far.style.transform = `translate3d(${ox * 10}px, ${scrollY * 0.05}px, 0)`;
         if(mid) mid.style.transform = `translate3d(${ox * 20}px, ${scrollY * 0.1}px, 0)`;
         if(near) near.style.transform = `translate3d(${ox * 30}px, ${scrollY * 0.15}px, 0)`;
@@ -583,13 +612,52 @@
       loop();
     }
 
-    function initRipples() {
+    // MAGNETIC BUTTONS & CURSOR
+    function initCursorAndMagnets() {
+      const dot = document.getElementById('cursorDot');
+      const ring = document.getElementById('cursorRing');
+      
+      if (window.matchMedia('(max-width: 900px)').matches) return;
+      
+      let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+      let rx = mx, ry = my;
+      
+      window.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      });
+      
+      function loop() {
+        rx += (mx - rx) * 0.15;
+        ry += (my - ry) * 0.15;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(loop);
+      }
+      loop();
+
+      document.addEventListener('mouseover', e => {
+        if (e.target.closest('a, button, .product-card')) ring.classList.add('hover');
+      });
+      document.addEventListener('mouseout', e => {
+        if (e.target.closest('a, button, .product-card')) ring.classList.remove('hover');
+      });
+
+      document.querySelectorAll('.magnetic').forEach(el => {
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.transform = `translate(0px, 0px)`; });
+      });
+
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('.btn-primary');
         if (!btn) return;
         const rect = btn.getBoundingClientRect();
         const ripple = document.createElement('span');
-        ripple.style.cssText = `position:absolute; background:rgba(255,255,255,0.4); border-radius:50%; transform:scale(0); animation:rippleAnim 0.6s ease-out; pointer-events:none;`;
+        ripple.style.cssText = `position:absolute; background:rgba(255,255,255,0.4); border-radius:50%; transform:scale(0); animation:rippleAnim 0.6s ease-out; pointer-events:none; z-index:10;`;
         const size = Math.max(rect.width, rect.height);
         ripple.style.width = ripple.style.height = size + 'px';
         ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
@@ -599,27 +667,50 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      document.body.style.overflow = 'hidden';
-      await runLoader();
-      document.body.style.overflow = '';
+    // HOLOGRAM PARALLAX
+    function initHologramParallax() {
+      const hologram = document.getElementById('hologram');
+      if (!hologram || window.matchMedia('(max-width: 900px)').matches) return;
       
+      window.addEventListener('mousemove', e => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const ox = (e.clientX - cx) / cx;
+        const oy = (e.clientY - cy) / cy;
+        hologram.style.transform = `perspective(1000px) rotateY(${ox * 15}deg) rotateX(${oy * -15}deg)`;
+      });
+    }
+
+    // ==========================================
+    // HERO ANIMATION
+    // ==========================================
+    function playHeroAnimation() {
+      if (typeof gsap === 'undefined') return;
+      
+      const tl = gsap.timeline();
+      tl.from('.nav', { y: -80, opacity: 0, duration: 0.6, ease: 'power3.out' });
+      tl.from('.hero-eyebrow', { y: 20, opacity: 0, duration: 0.5, ease: 'power3.out' }, '-=0.3');
+      tl.from('.hero h1 .word', { y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power4.out' }, '-=0.3');
+      tl.from('.hero p.lead', { y: 20, opacity: 0, duration: 0.6, ease: 'power3.out' }, '-=0.5');
+      tl.from('.hero-cta > *', { y: 20, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }, '-=0.4');
+      tl.from('.hologram', { scale: 0.7, opacity: 0, duration: 1, ease: 'power4.out' }, '-=1');
+    }
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', async () => {
       initParticles();
       init4DBackground();
-      initRipples();
+      initCursorAndMagnets();
+      initHologramParallax();
       
-      // Nav scroll
       window.addEventListener('scroll', () => {
         document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
       });
 
       fetchProducts();
-
-      if (typeof gsap !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-        gsap.from('.hero-text > *', { y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' });
-        gsap.from('.hero-visual', { scale: 0.8, opacity: 0, duration: 1, delay: 0.4, ease: 'power3.out' });
-      }
+      playHeroAnimation();
     });
   </script>
   <style>
