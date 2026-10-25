@@ -4,6 +4,7 @@ import threading
 import hashlib
 import io
 import json
+import tempfile
 import firebase_admin
 from firebase_admin import credentials, firestore
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -15,35 +16,42 @@ import pytesseract
 # ==========================================
 # 1. YOUR CONFIGURATION (EDIT THESE LINES)
 # ==========================================
+# Option 1: Paste your token directly here (Make sure to keep the quotes)
 BOT_TOKEN = "8672250869:AAERnPrc2Gg2xS4H_VxoVlnAds_JX6wGqOY"
+
+# Option 2: Or get it from Render Environment Variables (Safer)
+# BOT_TOKEN = os.environ.get("BOT_TOKEN")
+
 TELEBIRR_NUMBER = "0935630202"
 TELEBIRR_NAME = "Mekasha"
 YOUR_TELEGRAM_USERNAME = "@Madara_912" 
-ADMIN_ID = 8327762718 # REPLACE WITH YOUR REAL ID
+ADMIN_ID = 8327762718 # REPLACE WITH YOUR REAL ID FROM @userinfobot
 
 # ==========================================
-# 2. INITIALIZE FIREBASE (Using Environment Variable)
+# 2. INITIALIZE FIREBASE (Via Environment Variable)
 # ==========================================
 try:
-    # Try to load from Render's Environment Variable first
-    firebase_json = os.environ.get("FIREBASE_KEY_JSON")
+    firebase_json = os.environ.get("FIREBASE_KEY")
     
     if firebase_json:
-        cred_dict = json.loads(firebase_json)
-        cred = credentials.Certificate(cred_dict)
+        # Write the JSON string to a temporary file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+            f.write(firebase_json)
+            temp_key_path = f.name
+            
+        cred = credentials.Certificate(temp_key_path)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("Firebase connected successfully via Environment Variable!")
     else:
-        # If the variable is missing, try loading the file (for local testing)
-        cred = credentials.Certificate("firebase-key.json")
-        
-    firebase_admin.initialize_app(cred)
-    db = firestore.client()
-    print("Firebase connected successfully!")
+        print("WARNING: FIREBASE_KEY not found in Environment Variables. Database features will not work.")
+        db = None
 except Exception as e:
     print(f"Failed to connect to Firebase: {e}")
     db = None
 
 # ==========================================
-# 3. DUMMY WEB SERVER (For Render)
+# 3. DUMMY WEB SERVER (For Render Health Check)
 # ==========================================
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -98,20 +106,17 @@ async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ **Rejected:** You must type 'PAID' in the caption.")
         return
 
-    if not db:
-        await update.message.reply_text("⚠️ Database error. Please contact admin.")
-        return
-
     # Filter 2: Duplicate Check (Hash)
     file_id = update.message.photo[-1].file_id
     new_file = await context.bot.get_file(file_id)
     image_bytes = await new_file.download_as_bytearray()
     image_hash = hashlib.sha256(image_bytes).hexdigest()
 
-    doc_ref = db.collection('used_receipts').document(image_hash)
-    if doc_ref.get().exists:
-        await update.message.reply_text("🚨 **Scam Alert:** This exact screenshot has already been used.")
-        return
+    if db:
+        doc_ref = db.collection('used_receipts').document(image_hash)
+        if doc_ref.get().exists:
+            await update.message.reply_text("🚨 **Scam Alert:** This exact screenshot has already been used.")
+            return
 
     # Filter 3: Image Recognition (OCR)
     try:
@@ -127,7 +132,9 @@ async def handle_screenshot(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # Passed all filters
-    doc_ref.set({'used_by': update.effective_user.id, 'timestamp': firestore.SERVER_TIMESTAMP})
+    if db:
+        doc_ref.set({'used_by': update.effective_user.id, 'timestamp': firestore.SERVER_TIMESTAMP})
+        
     await update.message.reply_text("✅ Screenshot verified and received! Admin will process your order shortly.")
     await context.bot.forward_message(chat_id=ADMIN_ID, from_chat_id=update.message.chat_id, message_id=update.message.message_id)
 
